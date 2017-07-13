@@ -237,19 +237,87 @@
       return false; 
     },
 
-
-
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var board = this.rows(), sum = 0, col = 0, row = 0, diff = 0, testLength = board.length;
+      
+      var index = minorDiagonalColumnIndexAtFirstRow;
+      
+      if (board.length === 0) {
+        return false;
+      }
+      
+      // if (index === 0 || index === 3) {
+      //   return false;
+      // }
+       
+      //If the minor Index > board.length -1
+      //GREATER THAN THE BOARDLENGTH
+      if (index > board.length - 1) {
+        //initialize Row & Col
+        row = 0;
+        col = index;
+        
+        //Calc the diff between minor Index
+        diff = index - (board.length - 1);
+        
+        //Recalc row and col
+        row = row + diff;
+        col = col - diff;
+        
+        testLength = board.length;
+      }
+
+      //If the index is less than or equal to the board.length - 1
+      if (index <= board.length - 1) {
+        //Initialize Col and row
+        col = index;
+        row = 0;
+      }
+      debugger;
+      //Iterate through the test board with the specified conditionals above
+      
+      //board.forEach(function(row){console.log(JSON.stringify(row))});
+      
+      //Stay in column three until the row === 0; need to consider the 0 case then move on.
+      //
+      
+      for (row; row > 0; row--) {
+        for (col; col > 0; col--) {
+          console.log([row,col]);
+          sum += board[row][col];
+          if (sum > 1) {
+            return true;
+          }
+          
+          row++;
+        }
+      }
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var isConflict = false;
+      //debugger
+      //Generate number line
+      var i = ((board.length - 1) * 2) - 1;
+      
+      //Generate end of number line, ignore the corner ('3')
+      var iLength = board.length - 1;
+
+      //Do all test by passing index
+      for (i; i > 0; i--) {
+        isConflict = this.hasMinorDiagonalConflictAt(i);
+        if (isConflict) {
+          return isConflict;
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
