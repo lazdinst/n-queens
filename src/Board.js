@@ -73,18 +73,43 @@
     /*=========================================================================
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
+      // [0, 0, 0, 0],
+      // [1, 1, 0, 0],
+      // [0, 0, 0, 0],
+      // [0, 0, 0, 0]
 
     // ROWS - run from left to right
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var board = this.rows();
+      var eachRows = board[rowIndex];
+      var rowSum = eachRows.reduce(function(current, next) {
+        return current + next;
+      });
+      
+      //If rowSum is not 1, then there is a conflict return true
+      if (rowSum > 1) {
+        return true;
+      } else {
+        return false;
+      }
+      
+      // return rowSum < 2 ? false : true;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var isConflict = false;
+      for (var i = 0; i < board.length; i++) {
+        isConflict = this.hasRowConflictAt(i);
+        if (isConflict) {
+          return isConflict;
+        }
+      }
+      return isConflict;
     },
 
 
@@ -94,12 +119,31 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var board = this.rows();
+      var sum = 0;
+      for (var i = 0; i < board.length; i++) {
+        sum += board[i][colIndex];
+        if (sum > 1) {
+          return true;
+        }
+      }
+      //look at the row
+      //add the same index in each
+      
+      return false; 
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var isConflict = false;
+      for (var i = 0; i < board.length; i++) {
+        isConflict = this.hasColConflictAt(i);
+        if (isConflict) {
+          return isConflict;
+        }
+      }
+      return isConflict; 
     },
 
 
@@ -108,13 +152,89 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    
+//     Major Diagonals run diagonally, top-left to bottom-right
+//     Minor Diagonals run diagonally, top-right to bottom-left
+    
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var board = this.rows();
+      var sum = 0;
+      var row = 0, col = 0, testLength;
+      
+      var index = majorDiagonalColumnIndexAtFirstRow;
+      //If the major index is a corner
+      //No diag neighbors to test
+      if (board.length === 0) {
+        return false;
+      }
+      if (Math.abs(index) + 1 === board.length) {
+        return false;
+      }
+      
+      //Conditions for valid testing
+      
+      if (index === 0) { //If Major Index is zero
+        //There is a 1:1 relationship betweens rows and cols
+        row = index;
+        col = index;
+        //There is a 1:1 relationship between row and col, therefore it will be
+        //a symetrical test through the whole board, starting at the origin
+        testLength = board.length;
+        
+      } else if (index < 0) { //If Major index is negative
+        //There is no starting index of a negative, outside the array range
+        //therefore, the col is zero
+        col = 0;
+        //Start testing when row, Math.abs(index) = row
+        row = Math.abs(index);
+        //The board has been 'sliced' into a smaller piece
+        //therefore the 'board' runs from board.length - |index|
+        testLength = board.length - Math.abs(index);
+        
+      } else if (index > 0) { //If Major index is positive
+        //The col will equal the majoy col index as a start
+        col = index;
+        //The row will always begin at zero for this condition
+        row = 0;
+        //The board has been 'sliced' into a smaller piece
+        //therefore the 'board' runs from board.length - index
+        testLength = board.length;
+      }
+      
+      //Iterate through the test board with the specified conditionals above
+      for (row; row < testLength; row++) {
+        for (col; col < testLength; col++) {
+          sum += board[row][col];
+          if (sum > 1) {
+            return true;
+          } else {
+            row++;
+          }
+        }
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var isConflict = false;
+      
+      //Generate number line, ignore the corner ('-3')
+      var i = -(board.length - 2);
+      
+      //Generate end of number line, ignore the corner ('3')
+      var iLength = board.length - 1;
+
+      //Do all test by passing index
+      for (i; i < iLength; i++) {
+        isConflict = this.hasMajorDiagonalConflictAt(i);
+        if (isConflict) {
+          return isConflict;
+        }
+      }
+      
+      return false; 
     },
 
 
