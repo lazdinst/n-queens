@@ -293,6 +293,12 @@
             return true;
           }
           
+          //If reached the edge of the board
+          if (board[row + 1][col] === undefined) {
+            col = board.length - 1;
+            //row = 
+          }
+          
           row++;
         }
       }
